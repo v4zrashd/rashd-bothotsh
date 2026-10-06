@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login / Register - V4ZTelegramBotHoster</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <style>
+        /* Matrix canvas styling */
+        #matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            opacity: 0.15;
+            background-color: #050811;
+        }
+    </style>
+</head>
+<body class="login-wrapper">
+    <canvas id="matrix-bg"></canvas>
+
+    <div class="login-card">
+        <div class="login-header">
+            <!-- Glowing Logo -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="hacker-logo">
+                <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                <polyline points="2 17 12 22 22 17"></polyline>
+                <polyline points="2 12 12 17 22 12"></polyline>
+            </svg>
+            <h1 style="color: var(--primary-light); font-size: 1.75rem; letter-spacing: 0.05em; font-family: 'Fira Code', monospace; text-shadow: 0 0 10px var(--primary-light);">V4ZBotHoster</h1>
+            <p id="form-desc" style="color: var(--text-muted); font-size: 0.8125rem;">Hacker-Level Bot Operations Panel</p>
+        </div>
+
+        <div id="login-error" class="error-message"></div>
+        <div id="register-success" class="success-message" style="display: none; background-color: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); color: var(--success); padding: 0.75rem; border-radius: 8px; font-size: 0.875rem; margin-bottom: 1.25rem;"></div>
+
+        <!-- LOGIN FORM -->
+        <form id="login-form">
+            <div class="form-group">
+                <label for="username">USERNAME</label>
+                <input type="text" id="username" name="username" class="form-control text-green" placeholder="e.g. admin" required autofocus autocomplete="username">
+            </div>
+            
+            <div class="form-group">
+                <label for="password">PASSWORD</label>
+                <input type="password" id="password" name="password" class="form-control text-green" placeholder="••••••••" required autocomplete="current-password">
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem; font-family: 'Fira Code', monospace; letter-spacing: 0.05em;">ACCESS_GRANTED</button>
+        </form>
+
+        <!-- REGISTER FORM -->
+        <form id="register-form" style="display: none;">
+            <div class="form-group">
+                <label for="reg-username">NEW USERNAME</label>
+                <input type="text" id="reg-username" name="username" class="form-control text-green" placeholder="e.g. hacker_tg" required autocomplete="username">
+            </div>
+            
+            <div class="form-group">
+                <label for="reg-password">NEW PASSWORD</label>
+                <input type="password" id="reg-password" name="password" class="form-control text-green" placeholder="••••••••" required autocomplete="new-password">
+            </div>
+
+            <button type="submit" class="btn btn-accent" style="width: 100%; margin-top: 1rem; font-family: 'Fira Code', monospace; letter-spacing: 0.05em;">INITIALIZE_USER</button>
+        </form>
+
+        <div style="text-align: center; margin-top: 1.5rem;">
+            <a href="#" id="toggle-form-link" style="font-size: 0.8125rem; font-family: 'Fira Code', monospace; color: var(--text-muted); border-bottom: 1px dashed var(--text-muted);">[ REQUEST_NEW_MEMBERSHIP ]</a>
+        </div>
+
+        <p class="help-block" style="margin-top: 2rem;">Credits: Made by <a href="https://t.me/rashdteem" target="_blank" style="color: var(--accent); text-decoration: none; border-bottom: 1px dashed var(--accent); transition: color 0.3s ease;">@rashdteem</a></p>
+    </div>
+
+    <!-- Matrix Code Background JS Animation -->
+    <script>
+        const canvas = document.getElementById('matrix-bg');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$#@%&*()';
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
+
+        const drops = [];
+        for (let i = 0; i < columns; i++) {
+            drops[i] = 1;
+        }
+
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(5, 8, 17, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#00ff66'; // Glowing Matrix Green
+            ctx.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = letters[Math.floor(Math.random() * letters.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        setInterval(drawMatrix, 35);
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // Toggle Login / Register forms
+        const loginForm = document.getElementById("login-form");
+        const registerForm = document.getElementById("register-form");
+        const toggleLink = document.getElementById("toggle-form-link");
+        const formDesc = document.getElementById("form-desc");
+        const errorDiv = document.getElementById("login-error");
+        const successDiv = document.getElementById("register-success");
+
+        let isLogin = true;
+
+        toggleLink.addEventListener("click", (e) => {
+            e.preventDefault();
+            errorDiv.style.display = "none";
+            successDiv.style.display = "none";
+            
+            isLogin = !isLogin;
+            if (isLogin) {
+                loginForm.style.display = "block";
+                registerForm.style.display = "none";
+                toggleLink.textContent = "[ REQUEST_NEW_MEMBERSHIP ]";
+                formDesc.textContent = "Hacker-Level Bot Operations Panel";
+            } else {
+                loginForm.style.display = "none";
+                registerForm.style.display = "block";
+                toggleLink.textContent = "[ BACK_TO_AUTH_SIGN_IN ]";
+                formDesc.textContent = "Register a New Operator Account";
+            }
+        });
+
+        // Submit Sign In
+        loginForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            errorDiv.style.display = "none";
+            successDiv.style.display = "none";
+
+            const formData = new FormData(loginForm);
+            try {
+                const res = await fetch("/login", {
+                    method: "POST",
+                    body: formData
+                });
+
+                if (res.ok) {
+                    window.location.href = "/";
+                } else {
+                    const err = await res.json();
+                    errorDiv.textContent = err.detail || "Authentication Failed.";
+                    errorDiv.style.display = "block";
+                }
+            } catch (err) {
+                errorDiv.textContent = "CONNECTION ERROR: Cannot bind to authorization host.";
+                errorDiv.style.display = "block";
+            }
+        });
+
+        // Submit Register
+        registerForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            errorDiv.style.display = "none";
+            successDiv.style.display = "none";
+
+            const formData = new FormData(registerForm);
+            try {
+                const res = await fetch("/register", {
+                    method: "POST",
+                    body: formData
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.approval_required) {
+                        successDiv.textContent = "Operator request registered! Wait for Admin approval.";
+                    } else {
+                        successDiv.textContent = "Operator registered successfully! You can sign in now.";
+                    }
+                    successDiv.style.display = "block";
+                    registerForm.reset();
+                    
+                    // Switch back to login form
+                    isLogin = true;
+                    loginForm.style.display = "block";
+                    registerForm.style.display = "none";
+                    toggleLink.textContent = "[ REQUEST_NEW_MEMBERSHIP ]";
+                    formDesc.textContent = "Hacker-Level Bot Operations Panel";
+                } else {
+                    const err = await res.json();
+                    errorDiv.textContent = err.detail || "Registration rejected.";
+                    errorDiv.style.display = "block";
+                }
+            } catch (err) {
+                errorDiv.textContent = "CONNECTION ERROR: Registration endpoint unbindable.";
+                errorDiv.style.display = "block";
+            }
+        });
+    </script>
+</body>
+</html>
