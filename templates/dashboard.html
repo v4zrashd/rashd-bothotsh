@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>V4ZTelegramBotHoster Dashboard</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <!-- Chart.js and Ace Editor CDNs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.7/ace.js"></script>
+</head>
+<body id="dashboard-page">
+    <div class="container">
+        <!-- Top Navbar -->
+        <header class="header">
+            <div class="logo">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                    <polyline points="2 17 12 22 22 17"></polyline>
+                    <polyline points="2 12 12 17 22 12"></polyline>
+                </svg>
+                V4ZTelegramBot<span>Hoster</span>
+            </div>
+            <div class="user-menu">
+                <span id="header-user-badge" class="badge-role" style="font-size: 0.8125rem; font-family: 'Fira Code', monospace; color: var(--primary-light);">Operator: loading...</span>
+                <a href="/logout" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8125rem;">[ SHUTDOWN_SESSION ]</a>
+            </div>
+        </header>
+
+        <!-- Main Dashboard View -->
+        <div id="dashboard-view">
+            <!-- Stats Grid -->
+            <section class="stats-grid">
+                <div class="stat-card scroll-reveal">
+                    <div class="stat-info">
+                        <h3>Total Bots</h3>
+                        <p id="metric-total-bots">0</p>
+                    </div>
+                    <div class="stat-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+                    </div>
+                </div>
+                <div class="stat-card scroll-reveal">
+                    <div class="stat-info">
+                        <h3>Running Bots</h3>
+                        <p id="metric-running-bots" style="color: var(--success);">0</p>
+                    </div>
+                    <div class="stat-icon success">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    </div>
+                </div>
+                <div class="stat-card scroll-reveal">
+                    <div class="stat-info">
+                        <h3>Host CPU</h3>
+                        <p id="metric-cpu">0.0%</p>
+                    </div>
+                    <div class="stat-icon accent">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                    </div>
+                </div>
+                <div class="stat-card scroll-reveal">
+                    <div class="stat-info">
+                        <h3>Host Memory</h3>
+                        <p id="metric-ram">0.0%</p>
+                    </div>
+                    <div class="stat-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Navigation tabs for admin / developers -->
+            <div class="tab-container" id="main-nav-tabs" style="display: none; margin-bottom: 2rem;">
+                <div class="tab active" onclick="switchMainTab(this, 'bots-list-tab')">APPLICATIONS</div>
+                <div class="tab" onclick="switchMainTab(this, 'admin-panel-tab')" id="nav-admin-tab">ADMIN PANEL</div>
+            </div>
+
+            <!-- TAB CONTAINER 1: Bots List -->
+            <div id="tab-content-bots-list-tab" class="main-tab-content active">
+                <div class="section-header">
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <h2>Hosted Applications</h2>
+                        <span id="bot-limit-badge" class="badge-owner" style="font-size: 0.75rem; padding: 0.2rem 0.5rem; border: 1px solid var(--accent); background: rgba(0, 255, 102, 0.1); border-radius: 4px; color: var(--accent);">Bots: 0 / 3</span>
+                    </div>
+                    <button class="btn btn-primary" id="btn-add-bot">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        Host New Bot
+                    </button>
+                </div>
+
+                <div class="bots-grid" id="bots-grid">
+                    <!-- Loaded dynamically by JS -->
+                </div>
+            </div>
+
+            <!-- TAB CONTAINER 2: Admin Panel -->
+            <div id="tab-content-admin-panel-tab" class="main-tab-content" style="display: none;">
+                <div class="admin-grid" style="display: grid; grid-template-columns: 1fr; gap: 2rem;">
+                    
+                    <!-- Box A: Hoster Global Configs -->
+                    <div style="background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 2rem;">
+                        <h3 style="font-family: 'Fira Code', monospace; font-size: 1.15rem; color: var(--primary-light); margin-bottom: 1.5rem; text-transform: uppercase;">[ Hoster Settings ]</h3>
+                        
+                        <div class="switch-container">
+                            <label class="switch">
+                                <input type="checkbox" id="admin-auto-approve-toggle">
+                                <span class="slider"></span>
+                            </label>
+                            <span style="font-size: 0.875rem; color: var(--text-main); font-weight: 500;">Auto-Approve User Registrations</span>
+                        </div>
+                        <p style="font-size: 0.8125rem; color: var(--text-muted); margin-top: -0.75rem; margin-bottom: 1.5rem; margin-left: 3.5rem;">If enabled, newly registered users can log in immediately. Otherwise, their status remains pending until approved.</p>
+                        
+                        <button type="button" id="btn-save-settings" class="btn btn-primary">Save Configs</button>
+                    </div>
+
+                    <!-- Box B: User Operators Management -->
+                    <div style="background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 2rem;">
+                        <h3 style="font-family: 'Fira Code', monospace; font-size: 1.15rem; color: var(--primary-light); margin-bottom: 1rem; text-transform: uppercase;">[ Registered Operators ]</h3>
+                        <p style="font-size: 0.8125rem; color: var(--text-muted); margin-bottom: 1.5rem;">Monitor system users, audit their device logs / IPs, approve new accounts, or ban offending operators.</p>
+
+                        <div class="table-container" style="overflow-x: auto;">
+                            <table class="hacker-table">
+                                <thead>
+                                    <tr>
+                                        <th>Username</th>
+                                        <th>Role</th>
+                                        <th>Registration Status</th>
+                                        <th>Audit IP</th>
+                                        <th>Device / User-Agent</th>
+                                        <th>Registered At</th>
+                                        <th>Quota</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-users-table-body">
+                                    <!-- Filled dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Box C: Change Admin Password -->
+                    <div style="background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 2rem; max-width: 500px;">
+                        <h3 style="font-family: 'Fira Code', monospace; font-size: 1.15rem; color: var(--primary-light); margin-bottom: 1rem; text-transform: uppercase;">[ Change Password ]</h3>
+                        <form id="form-change-password">
+                            <div class="form-group">
+                                <label for="admin_new_password">New Password</label>
+                                <input type="password" id="admin_new_password" class="form-control" placeholder="••••••••" required>
+                            </div>
+                            <button type="submit" class="btn btn-accent">Change Password</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bot Workspace Management View -->
+        <div id="workspace-view" style="display: none;">
+            <div class="workspace-layout">
+                <!-- Sidebar Bots List -->
+                <aside class="sidebar-bots">
+                    <div class="sidebar-title">Applications</div>
+                    <div class="sidebar-list" id="sidebar-bots-list">
+                        <!-- Loaded dynamically -->
+                    </div>
+                    <button class="btn btn-secondary" style="width: 100%; margin-top: 1.5rem; justify-content: center;" onclick="showDashboardView()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                        Exit Workspace
+                    </button>
+                </aside>
+
+                <!-- Workspace details panel -->
+                <main class="main-workspace">
+                    <div class="workspace-header">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+                                <h2 id="ws-bot-name" style="word-break: break-all;">Bot Name</h2>
+                                <span id="ws-bot-owner-badge" class="badge-owner" style="font-size: 0.75rem;">Owner: admin</span>
+                                <span id="ws-bot-telegram-badge" class="badge-owner" style="font-size: 0.75rem; display: none; border-color: var(--accent); color: var(--accent); background: rgba(0, 255, 102, 0.05);"></span>
+                            </div>
+                            <span id="ws-bot-status-badge" class="bot-status-badge status-stopped" style="margin-top: 0.5rem; display: inline-block;">Stopped</span>
+                        </div>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button id="ws-btn-start" class="btn btn-primary" onclick="handleWSControlBot('start')">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                                Start
+                            </button>
+                            <button id="ws-btn-stop" class="btn btn-danger" onclick="handleWSControlBot('stop')" style="display: none;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/></svg>
+                                Stop
+                            </button>
+                            <button id="ws-btn-restart" class="btn btn-secondary" onclick="handleWSControlBot('restart')">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                                Restart
+                            </button>
+                            <button class="btn btn-danger btn-icon" title="Delete Bot" onclick="deleteSelectedBot()">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tabs Menu -->
+                    <div class="tab-container">
+                        <div class="tab active" onclick="switchTab('console')">Console Logs</div>
+                        <div class="tab" onclick="switchTab('ide')">Web IDE</div>
+                        <div class="tab" onclick="switchTab('metrics')">Performance</div>
+                        <div class="tab" onclick="switchTab('env')">Env Variables</div>
+                        <div class="tab" onclick="switchTab('packages')">Package Installer</div>
+                    </div>
+
+                    <!-- TAB 1: Console Logs -->
+                    <div class="tab-content active" id="tab-console">
+                        <div class="console-container">
+                            <div class="console-header">
+                                <span>Output Console</span>
+                                <div style="display: flex; gap: 0.75rem;">
+                                    <button class="btn-refresh-logs" onclick="refreshConsoleLogs()" style="background: transparent; border: none; color: var(--accent); cursor: pointer; display: flex; align-items: center; gap: 0.25rem; font-family: 'Fira Code', monospace; font-size: 0.75rem;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                                        Refresh
+                                    </button>
+                                    <button onclick="clearConsole()" style="background: transparent; border: none; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; gap: 0.25rem; font-family: 'Fira Code', monospace; font-size: 0.75rem;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                                        Clear
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="console-body" id="terminal-console">Connecting log stream...</div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 2: Web IDE (Monaco/Ace Code Editor) -->
+                    <div class="tab-content" id="tab-ide">
+                        <div style="margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <h3 style="font-size: 1.125rem; margin-bottom: 0.25rem;">Web IDE File Explorer</h3>
+                                <p style="font-size: 0.8125rem; color: var(--text-muted);">Directly edit, create, or delete files inside your bot's sandbox directory.</p>
+                            </div>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button type="button" class="btn btn-secondary" onclick="createNewFilePrompt()">+ File / Folder</button>
+                                <button type="button" id="ide-save-btn" class="btn btn-accent" onclick="saveActiveFileIDE()" disabled>Save File [Ctrl+S]</button>
+                            </div>
+                        </div>
+
+                        <!-- Mobile View Tab Switcher for Web IDE -->
+                        <div class="mobile-ide-tabs" style="display: none; gap: 0.5rem; margin-bottom: 1rem; width: 100%;">
+                            <button type="button" class="btn btn-secondary active" id="btn-mobile-show-tree" onclick="switchMobileIDETab('tree')" style="flex: 1; justify-content: center; font-size: 0.8125rem; padding: 0.5rem;">📁 Explorer</button>
+                            <button type="button" class="btn btn-secondary" id="btn-mobile-show-editor" onclick="switchMobileIDETab('editor')" style="flex: 1; justify-content: center; font-size: 0.8125rem; padding: 0.5rem;">📝 Code Editor</button>
+                        </div>
+
+                        <div class="ide-layout-grid">
+                            <!-- Left: File Browser Tree -->
+                            <div class="ide-file-tree-container mobile-active">
+                                <div class="file-tree-header">File Explorer</div>
+                                <div id="ide-tree-root" class="file-tree-body">
+                                    <!-- Rendered dynamically -->
+                                </div>
+                            </div>
+                            
+                            <!-- Right: Editor Pane -->
+                            <div class="ide-editor-container">
+                                <div id="ide-active-file-header" class="ide-file-header">No file selected. Click a file in the explorer tree to edit.</div>
+                                <div id="ide-editor"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 3: Performance Charts -->
+                    <div class="tab-content" id="tab-metrics">
+                        <div style="margin-bottom: 1.5rem;">
+                            <h3 style="font-size: 1.125rem; margin-bottom: 0.25rem;">Live Bot Metrics</h3>
+                            <p style="font-size: 0.8125rem; color: var(--text-muted);">Real-time CPU and Memory allocation metrics tracked from process PID.</p>
+                        </div>
+
+                        <div class="metrics-dashboard-grid">
+                            <!-- Chart A: CPU -->
+                            <div class="chart-card">
+                                <h4>Bot CPU Usage (%)</h4>
+                                <div class="chart-wrapper">
+                                    <canvas id="chart-cpu"></canvas>
+                                </div>
+                            </div>
+                            <!-- Chart B: RAM -->
+                            <div class="chart-card">
+                                <h4>Bot RAM Usage (MB)</h4>
+                                <div class="chart-wrapper">
+                                    <canvas id="chart-ram"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 4: Env Variables -->
+                    <div class="tab-content" id="tab-env">
+                        <div style="margin-bottom: 1.5rem;">
+                            <h3 style="font-size: 1.125rem; margin-bottom: 0.25rem;">Environment Variables</h3>
+                            <p style="font-size: 0.8125rem; color: var(--text-muted);">Set token key, configurations, and API credentials. Note: restarting the bot is recommended after updating environment variables.</p>
+                        </div>
+
+                        <div class="env-list" id="env-variables-list">
+                            <!-- Populated Dynamically -->
+                        </div>
+
+                        <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                            <button type="button" class="btn btn-secondary" id="env-add-row">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                                Add Variable
+                            </button>
+                            <button type="button" class="btn btn-accent" id="btn-save-env">Save Variables</button>
+                        </div>
+                    </div>
+
+                    <!-- TAB 5: Package Installer -->
+                    <div class="tab-content" id="tab-packages">
+                        <div style="margin-bottom: 1.5rem;">
+                            <h3 style="font-size: 1.125rem; margin-bottom: 0.25rem;">Python Dependencies Management</h3>
+                            <p style="font-size: 0.8125rem; color: var(--text-muted);">Manage dependencies inside the virtual environment (`venv`) of this application.</p>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                            <!-- Panel A: Install single package -->
+                            <div style="background-color: rgba(255,255,255,0.02); padding: 1.5rem; border: 1px solid var(--border-color); border-radius: 8px;">
+                                <h4 style="font-size: 0.95rem; margin-bottom: 1rem;">Install Specific PyPI Package</h4>
+                                <form id="form-install-package">
+                                    <div class="form-group">
+                                        <label for="package_name">Package Name</label>
+                                        <input type="text" id="package_name" class="form-control" placeholder="e.g. pyTelegramBotAPI or python-telegram-bot" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary" style="width: 100%;">Install Package</button>
+                                </form>
+                            </div>
+
+                            <!-- Panel B: requirements.txt Editor -->
+                            <div style="background-color: rgba(255,255,255,0.02); padding: 1.5rem; border: 1px solid var(--border-color); border-radius: 8px;">
+                                <h4 style="font-size: 0.95rem; margin-bottom: 0.5rem;">Edit requirements.txt</h4>
+                                <p style="font-size: 0.8125rem; color: var(--text-muted); margin-bottom: 1rem;">Directly add/modify python packages inside requirements.txt for this application.</p>
+                                <div class="form-group">
+                                    <textarea id="requirements_content" class="form-control" rows="6" placeholder="python-telegram-bot&#10;requests" style="font-family: 'Fira Code', monospace; font-size: 0.8125rem;"></textarea>
+                                </div>
+                                <div style="display: flex; gap: 0.75rem;">
+                                    <button type="button" id="btn-save-reqs" class="btn btn-secondary" style="flex: 1;">Save File</button>
+                                    <button type="button" id="btn-install-reqs" class="btn btn-accent" style="flex: 1.5;">Save & Install requirements.txt</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border-color); text-align: center; font-size: 0.75rem; color: var(--text-dark);">
+            V4ZTelegramBotHoster &bull; Credits: Made by <a href="https://t.me/rashdteem" target="_blank" style="color: var(--accent); text-decoration: none; border-bottom: 1px dashed var(--accent); transition: color 0.3s ease;">@rashdteem</a>
+        </footer>
+    </div>
+
+    <!-- HOST BOT MODAL POPUP -->
+    <div class="modal-overlay" id="add-bot-modal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <div>
+                    <h3>Host New Bot</h3>
+                    <span id="modal-bot-limit-badge" style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-top: 0.25rem;">Quota: 0 / 3 bots used</span>
+                </div>
+                <button class="modal-close" onclick="closeAddBotModal()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            
+            <form id="add-bot-form" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="name">Application Name</label>
+                    <input type="text" id="name" name="name" class="form-control" placeholder="My Telegram Bot" required>
+                </div>
+
+                <!-- Only visible to Admin: Choose Owner -->
+                <div class="form-group" id="modal-owner-group" style="display: none;">
+                    <label for="bot_owner">Assign Owner</label>
+                    <select id="bot_owner" name="owner" class="form-control" style="background-color: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-main); padding: 0.5rem; border-radius: 6px; width: 100%; font-family: 'Fira Code', monospace;">
+                        <!-- Dynamically populated with approved users -->
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="entrypoint">Entrypoint File</label>
+                    <input type="text" id="entrypoint" name="entrypoint" class="form-control" placeholder="bot.py" value="bot.py" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Bot Source Code Type</label>
+                    <!-- 3D Toggle Picker Buttons -->
+                    <div class="hacker-toggle-group" id="modal-type-toggles">
+                        <button type="button" class="btn btn-toggle active" data-type="zip">ZIP UPLOAD</button>
+                        <button type="button" class="btn btn-toggle" data-type="git">GIT CLONE</button>
+                        <button type="button" class="btn btn-toggle" data-type="paste">PASTE CODE</button>
+                    </div>
+                    <input type="hidden" id="source_type" name="source_type" value="zip">
+                </div>
+
+                <!-- Field A: ZIP File Upload -->
+                <div class="form-group" id="modal-file-group">
+                    <label for="zip_file">ZIP Project File</label>
+                    <input type="file" id="zip_file" name="zip_file" class="form-control" accept=".zip">
+                    <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">Should contain your entrypoint file and optional requirements.txt.</p>
+                </div>
+
+                <!-- Field B: Git Repo -->
+                <div class="form-group" id="modal-git-group" style="display: none;">
+                    <div class="form-group">
+                        <label for="git_url">Git Repository URL</label>
+                        <input type="url" id="git_url" name="git_url" class="form-control" placeholder="https://github.com/username/repo.git">
+                    </div>
+                    <div class="form-group">
+                        <label for="git_branch">Git Branch</label>
+                        <input type="text" id="git_branch" name="git_branch" class="form-control" placeholder="main" value="main">
+                    </div>
+                </div>
+
+                <!-- Field C: Paste Python Code -->
+                <div class="form-group" id="modal-paste-group" style="display: none;">
+                    <div class="form-group">
+                        <label for="paste_code">Pasted Python Code</label>
+                        <textarea id="paste_code" name="paste_code" class="form-control" rows="8" placeholder="import telebot&#10;..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="paste_requirements">Pasted requirements.txt (Optional)</label>
+                        <textarea id="paste_requirements" name="paste_requirements" class="form-control" rows="4" placeholder="python-telegram-bot&#10;requests"></textarea>
+                    </div>
+                </div>
+
+                <!-- Auto Restart Toggle -->
+                <div class="switch-container">
+                    <label class="switch">
+                        <input type="checkbox" id="auto_restart" name="auto_restart" checked>
+                        <span class="slider"></span>
+                    </label>
+                    <span style="font-size: 0.875rem; color: var(--text-muted);">Auto-restart process if crashed</span>
+                </div>
+
+                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    <button type="button" class="btn btn-secondary" style="flex: 1;" onclick="closeAddBotModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">Host Bot</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- USER MANAGEMENT DETAIL MODAL -->
+    <div class="modal-overlay" id="user-manage-modal">
+        <div class="modal-container" style="max-width: 800px; width: 90%;">
+            <div class="modal-header">
+                <div>
+                    <h3 id="manage-user-title">Manage Operator: sojib12</h3>
+                    <span id="manage-user-subtitle" style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-top: 0.25rem;">Auditing logs & bot deployments</span>
+                </div>
+                <button class="modal-close" onclick="closeUserManageModal()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            
+            <div style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1.5rem; max-height: 70vh; overflow-y: auto;">
+                <!-- Section 1: Quota Settings -->
+                <div style="background-color: rgba(189, 0, 255, 0.05); border: 1px solid rgba(189, 0, 255, 0.2); border-radius: 8px; padding: 1.25rem;">
+                    <h4 style="font-family: 'Fira Code', monospace; font-size: 0.95rem; color: var(--accent-light); margin-bottom: 0.75rem; text-transform: uppercase;">[ Account Settings & Quota ]</h4>
+                    <div style="display: flex; gap: 1.5rem; align-items: flex-end; flex-wrap: wrap;">
+                        <div style="flex: 1; min-width: 150px;">
+                            <label style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.25rem; display: block;">Operator Bot Limit</label>
+                            <input type="number" id="manage-user-limit-input" class="form-control" min="1" max="100" style="padding: 0.4rem;">
+                        </div>
+                        <button type="button" class="btn btn-accent" onclick="saveUserLimit()" style="height: 38px; padding: 0 1.25rem;">UPDATE_LIMIT</button>
+                    </div>
+                </div>
+                
+                <!-- Section 2: Operator's Hosted Bots -->
+                <div>
+                    <h4 style="font-family: 'Fira Code', monospace; font-size: 0.95rem; color: var(--primary-light); margin-bottom: 0.75rem; text-transform: uppercase;">[ Hosted Bot Instances ]</h4>
+                    <div id="manage-user-bots-list" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                        <!-- Dynamically filled with user bot records -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fullscreen Cyber Loading Overlay -->
+    <div class="cyber-overlay" id="creation-loading-overlay" style="display: none;">
+        <div class="cyber-overlay-content">
+            <div class="cyber-loader-spinner"></div>
+            <div class="cyber-loading-title">INITIALIZING_SANDBOX</div>
+            <div class="cyber-progress-container">
+                <div class="cyber-progress-bar" id="creation-progress-bar"></div>
+            </div>
+            <div class="cyber-terminal-logs" id="creation-terminal-logs">
+                <div>&gt; [SYS] Handshaking with Railway container...</div>
+                <div>&gt; [SYS] Creating isolated user directory...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

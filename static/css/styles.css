@@ -1,0 +1,1380 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --bg-dark: #03060f;
+    --bg-card: #0a0e1a;
+    --bg-card-hover: #121829;
+    --border-color: #1a233d;
+    
+    --primary: #00d4ff;
+    --primary-hover: #0099cc;
+    --primary-light: #66e0ff;
+    --accent: #00ff66; /* Matrix green */
+    --accent-hover: #00cc52;
+    
+    --text-main: #f3f4f6;
+    --text-muted: #9ca3af;
+    --text-dark: #4b5563;
+    
+    --success: #00ff66;
+    --danger: #ff3366;
+    --warning: #f59e0b;
+    --info: #3b82f6;
+    
+    --glow-green: 0 0 10px rgba(0, 255, 102, 0.3);
+    --glow-purple: 0 0 15px rgba(0, 212, 255, 0.4);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Fira Sans', sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    line-height: 1.5;
+    background-image: radial-gradient(circle at 50% 50%, #0d1527 0%, #03060f 100%);
+    min-height: 100vh;
+}
+
+a {
+    color: var(--primary-light);
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+a:hover {
+    color: var(--accent);
+    text-shadow: var(--glow-green);
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-dark);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary);
+}
+
+/* Layout */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 2rem;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-family: 'Fira Code', monospace;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-main);
+    text-shadow: var(--glow-purple);
+}
+
+.logo svg {
+    color: var(--primary-light);
+    filter: drop-shadow(0 0 5px var(--primary));
+}
+
+.logo span {
+    color: var(--accent);
+    text-shadow: var(--glow-green);
+}
+
+.user-menu {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+/* Badges */
+.badge-role {
+    background-color: rgba(0, 212, 255, 0.15);
+    border: 1px solid var(--primary);
+    padding: 0.25rem 0.75rem;
+    border-radius: 6px;
+    box-shadow: var(--glow-purple);
+}
+
+.badge-owner {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    font-family: 'Fira Code', monospace;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+}
+
+/* Overview Cards */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.stat-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--primary), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.5s;
+}
+
+.stat-card:hover::before {
+    transform: translateX(100%);
+}
+
+.stat-card:hover {
+    transform: translateY(-3px) scale(1.02);
+    border-color: var(--primary);
+    box-shadow: var(--glow-purple);
+}
+
+.stat-info h3 {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-family: 'Fira Code', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+}
+
+.stat-info p {
+    font-size: 2rem;
+    font-weight: 700;
+    font-family: 'Fira Code', monospace;
+}
+
+.stat-icon {
+    background-color: rgba(0, 212, 255, 0.08);
+    color: var(--primary-light);
+    padding: 0.75rem;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(0, 212, 255, 0.2);
+}
+
+.stat-icon.accent {
+    background-color: rgba(0, 255, 102, 0.05);
+    color: var(--accent);
+    border-color: rgba(0, 255, 102, 0.15);
+}
+
+.stat-icon.success {
+    background-color: rgba(0, 255, 102, 0.05);
+    color: var(--success);
+    border-color: rgba(0, 255, 102, 0.15);
+}
+
+/* Sections & Headers */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    border-left: 3px solid var(--accent);
+    padding-left: 0.75rem;
+}
+
+.section-header h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    font-family: 'Fira Code', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Buttons (Modern 3D Hacker Style) */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    font-size: 0.8125rem;
+    font-family: 'Fira Code', monospace;
+    font-weight: 500;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    background-color: rgba(255,255,255,0.02);
+    color: var(--text-main);
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    text-transform: uppercase;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary-light);
+    box-shadow: var(--glow-purple);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s;
+    transform: scale(0.5);
+    pointer-events: none;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 0 25px rgba(0, 212, 255, 0.8), inset 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+.btn-primary:hover::after {
+    opacity: 1;
+    transform: scale(1);
+    animation: btn-pulse 1.5s infinite alternate;
+}
+
+@keyframes btn-pulse {
+    0% { transform: scale(0.95); opacity: 0.4; }
+    100% { transform: scale(1.05); opacity: 0.7; }
+}
+
+.btn-secondary {
+    background-color: #0d1424;
+    border-color: var(--border-color);
+}
+
+.btn-secondary:hover {
+    background-color: var(--bg-card-hover);
+    border-color: var(--primary-light);
+    color: var(--primary-light);
+    box-shadow: 0 0 12px rgba(167, 139, 250, 0.4);
+    animation: cyber-glitch 0.2s steps(2) 1 alternate;
+}
+
+@keyframes cyber-glitch {
+    0% { transform: translate(1px, 1px) skewX(2deg); filter: hue-rotate(90deg); }
+    50% { transform: translate(-1px, -1px) skewX(-2deg); filter: hue-rotate(180deg); }
+    100% { transform: translate(0); }
+}
+
+.btn-accent {
+    background-color: transparent;
+    border-color: var(--accent);
+    color: var(--accent);
+    box-shadow: var(--glow-green);
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.btn-accent::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 255, 102, 0.15), transparent);
+    transition: all 0.4s ease;
+    z-index: -1;
+}
+
+.btn-accent:hover {
+    color: #ffffff;
+    border-color: #ffffff;
+    box-shadow: 0 0 20px rgba(0, 255, 102, 0.8);
+    transform: translateY(-2px);
+}
+
+.btn-accent:hover::before {
+    left: 100%;
+}
+
+.btn-danger {
+    background-color: rgba(255, 51, 102, 0.1);
+    border-color: var(--danger);
+    color: var(--danger);
+}
+
+.btn-danger:hover {
+    background-color: rgba(255, 51, 102, 0.25);
+    border-color: #ff3366;
+    color: #ffffff;
+    transform: scale(0.98);
+    box-shadow: 0 0 20px rgba(255, 51, 102, 0.7);
+    animation: danger-blink 0.5s infinite;
+}
+
+@keyframes danger-blink {
+    0%, 100% { box-shadow: 0 0 10px rgba(255, 51, 102, 0.4); }
+    50% { box-shadow: 0 0 25px rgba(255, 51, 102, 0.9); }
+}
+
+.btn-icon {
+    padding: 0.5rem;
+    border-radius: 6px;
+}
+
+.btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    box-shadow: none !important;
+}
+
+/* Hacker Toggle Button Group */
+.hacker-toggle-group {
+    display: inline-flex;
+    background-color: #060914;
+    border: 1px solid var(--border-color);
+    padding: 0.25rem;
+    border-radius: 8px;
+    gap: 0.25rem;
+    width: 100%;
+}
+
+.btn-toggle {
+    flex: 1;
+    border: 1px solid transparent;
+    background: transparent;
+    box-shadow: none;
+    border-radius: 5px;
+    padding: 0.5rem;
+}
+
+.btn-toggle.active {
+    background-color: rgba(0, 212, 255, 0.15);
+    border-color: var(--primary);
+    color: var(--primary-light);
+    box-shadow: var(--glow-purple);
+}
+
+/* Bots Grid list */
+.bots-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+}
+
+.bot-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 250px;
+    height: auto;
+    gap: 1rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+}
+
+.bot-card:hover {
+    border-color: var(--primary);
+    transform: translateY(-3px);
+    box-shadow: var(--glow-purple);
+}
+
+.bot-card.active-card {
+    border-color: var(--primary);
+    box-shadow: var(--glow-purple);
+}
+
+.bot-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.bot-title {
+    font-size: 1.1rem;
+    font-family: 'Fira Code', monospace;
+    font-weight: 600;
+    word-break: break-all;
+}
+
+.bot-source {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-family: 'Fira Code', monospace;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-top: 0.25rem;
+}
+
+.bot-status-badge {
+    padding: 0.25rem 0.625rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-family: 'Fira Code', monospace;
+    font-weight: 600;
+    text-transform: uppercase;
+    border: 1px solid transparent;
+}
+
+.status-stopped {
+    background-color: rgba(107, 114, 128, 0.1);
+    border-color: var(--text-dark);
+    color: var(--text-muted);
+}
+
+.status-running {
+    background-color: rgba(0, 255, 102, 0.08);
+    border-color: var(--success);
+    color: var(--success);
+    box-shadow: var(--glow-green);
+}
+
+.status-error {
+    background-color: rgba(255, 51, 102, 0.08);
+    border-color: var(--danger);
+    color: var(--danger);
+}
+
+.status-installing {
+    background-color: rgba(245, 158, 11, 0.1);
+    border-color: var(--warning);
+    color: var(--warning);
+    animation: pulse 1.5s infinite ease-in-out;
+}
+
+.bot-card-body {
+    margin: 1rem 0;
+}
+
+.bot-meta-item {
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    margin-bottom: 0.4rem;
+}
+
+.bot-meta-item span {
+    color: var(--text-main);
+    font-family: 'Fira Code', monospace;
+}
+
+.bot-card-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Tabs */
+.tab-container {
+    display: flex;
+    gap: 0.25rem;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 1.5rem;
+    background-color: rgba(255, 255, 255, 0.01);
+    padding: 0.25rem 0.25rem 0;
+    border-radius: 6px 6px 0 0;
+}
+
+.tab {
+    padding: 0.625rem 1.25rem;
+    cursor: pointer;
+    font-size: 0.8125rem;
+    font-family: 'Fira Code', monospace;
+    font-weight: 500;
+    color: var(--text-muted);
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    text-transform: uppercase;
+}
+
+.tab:hover {
+    color: var(--text-main);
+}
+
+.tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+    text-shadow: var(--glow-green);
+}
+
+.tab-content {
+    display: none;
+    flex-grow: 1;
+}
+
+.tab-content.active {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Console Container Terminal */
+.console-container {
+    background-color: #020308;
+    border: 1px solid #111a30;
+    border-radius: 8px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    height: 480px;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+    position: relative;
+}
+
+/* Retro CRT scanlines overlay */
+.console-container::after {
+    content: " ";
+    display: block;
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    z-index: 10;
+    background-size: 100% 4px, 6px 100%;
+    pointer-events: none;
+}
+
+.console-header {
+    background-color: #070b14;
+    padding: 0.625rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    font-family: 'Fira Code', monospace;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.console-body {
+    flex-grow: 1;
+    padding: 1.25rem;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.8125rem;
+    color: #39ff14; /* Neon terminal green */
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
+    text-shadow: 0 0 4px rgba(57, 255, 20, 0.4);
+}
+
+/* Web IDE file tree and code editor splits */
+.ide-layout-grid {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 1.25rem;
+    height: 520px;
+    align-items: stretch;
+}
+
+.mobile-ide-tabs {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .mobile-ide-tabs {
+        display: flex !important;
+    }
+    .ide-layout-grid {
+        grid-template-columns: 1fr;
+        height: auto;
+    }
+    .ide-file-tree-container {
+        display: none;
+        height: 480px;
+        flex-direction: column;
+    }
+    .ide-file-tree-container.mobile-active {
+        display: flex;
+    }
+    .ide-editor-container {
+        display: none;
+        height: 480px;
+        flex-direction: column;
+    }
+    .ide-editor-container.mobile-active {
+        display: flex;
+    }
+    /* Always show delete buttons in IDE sidebar on mobile since no hover exists */
+    .ide-delete-btn {
+        display: inline-block !important;
+        padding: 4px 8px;
+        margin-left: auto;
+        color: var(--danger) !important;
+    }
+}
+
+.ide-file-tree-container {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.file-tree-header {
+    background-color: #080d1a;
+    padding: 0.5rem 1rem;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--primary-light);
+}
+
+.file-tree-body {
+    padding: 0.75rem;
+    overflow-y: auto;
+    flex-grow: 1;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.8125rem;
+}
+
+.tree-item {
+    padding: 0.35rem 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: background 0.15s;
+    user-select: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.tree-item:hover {
+    background-color: var(--bg-card-hover);
+}
+
+.tree-item.active {
+    background-color: rgba(0, 212, 255, 0.15);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    color: var(--primary-light);
+}
+
+.tree-item-dir {
+    color: #eab308; /* yellow for directories */
+}
+
+.tree-item-file {
+    color: var(--text-main);
+}
+
+.ide-editor-container {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background-color: #020308;
+}
+
+.ide-file-header {
+    background-color: #080d1a;
+    padding: 0.5rem 1rem;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-muted);
+}
+
+#ide-editor {
+    flex-grow: 1;
+    width: 100%;
+    height: 100%;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.875rem;
+}
+
+/* Metrics Dashboard charts */
+.metrics-dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .metrics-dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.chart-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.chart-card h4 {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.875rem;
+    color: var(--primary-light);
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+}
+
+.chart-wrapper {
+    height: 240px;
+    width: 100%;
+    position: relative;
+}
+
+/* Form Styles */
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.75rem;
+    font-family: 'Fira Code', monospace;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.05em;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.625rem 0.875rem;
+    background-color: #060914;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-main);
+    font-family: inherit;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: var(--glow-purple);
+}
+
+.form-control.text-green {
+    color: var(--accent);
+    font-family: 'Fira Code', monospace;
+}
+
+/* Hacker Table Styling */
+.hacker-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.75rem;
+    color: var(--text-main);
+}
+
+.hacker-table th, .hacker-table td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.hacker-table th {
+    color: var(--primary-light);
+    background-color: rgba(0, 212, 255, 0.05);
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.hacker-table tr:hover {
+    background-color: rgba(255,255,255,0.01);
+}
+
+/* Modal Popup Window */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(2, 3, 8, 0.8);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease-out;
+}
+
+.modal-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-container {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    width: 100%;
+    max-width: 500px;
+    padding: 2rem;
+    position: relative;
+    box-shadow: var(--glow-purple);
+    transform: scale(0.95);
+    transition: transform 0.2s ease-out;
+}
+
+.modal-overlay.open .modal-container {
+    transform: scale(1);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.modal-header h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    font-family: 'Fira Code', monospace;
+    color: var(--primary-light);
+}
+
+.modal-close {
+    cursor: pointer;
+    color: var(--text-muted);
+    background: transparent;
+    border: none;
+}
+
+.modal-close:hover {
+    color: var(--danger);
+}
+
+/* Toggle Switch slider */
+.switch-container {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #060914;
+    transition: .3s;
+    border-radius: 24px;
+    border: 1px solid var(--border-color);
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 3px;
+    bottom: 3px;
+    background-color: var(--text-muted);
+    transition: .3s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: var(--primary);
+    border-color: var(--primary-light);
+}
+
+input:checked + .slider:before {
+    transform: translateX(20px);
+    background-color: #ffffff;
+}
+
+/* Login Wrapper card layout */
+.login-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 1rem;
+}
+
+.login-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    width: 100%;
+    max-width: 420px;
+    padding: 2.5rem;
+    box-shadow: var(--glow-purple);
+    position: relative;
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.login-header svg {
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+    filter: drop-shadow(0 0 5px var(--accent));
+}
+
+.error-message {
+    background-color: rgba(255, 51, 102, 0.1);
+    border: 1px solid rgba(255, 51, 102, 0.2);
+    color: var(--danger);
+    padding: 0.75rem;
+    border-radius: 6px;
+    font-size: 0.8125rem;
+    margin-bottom: 1.25rem;
+    font-family: 'Fira Code', monospace;
+    display: none;
+}
+
+.help-block {
+    text-align: center;
+    font-size: 0.7rem;
+    color: var(--text-dark);
+    font-family: 'Fira Code', monospace;
+}
+
+/* Workspace layout details */
+.workspace-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 1.5rem;
+    align-items: start;
+}
+
+@media (max-width: 900px) {
+    .workspace-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+.sidebar-bots {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.25rem;
+}
+
+.sidebar-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    font-family: 'Fira Code', monospace;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--primary-light);
+    text-transform: uppercase;
+}
+
+.sidebar-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.sidebar-item {
+    padding: 0.75rem 1.000rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background-color: rgba(255, 255, 255, 0.01);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s;
+}
+
+.sidebar-item:hover {
+    background-color: var(--bg-card-hover);
+    border-color: var(--primary);
+}
+
+.sidebar-item.active {
+    background-color: rgba(0, 212, 255, 0.08);
+    border-color: var(--primary);
+    box-shadow: inset 3px 0 0 var(--primary);
+}
+
+.main-workspace {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 2rem;
+    min-height: 650px;
+    display: flex;
+    flex-direction: column;
+}
+
+.workspace-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 1.5rem;
+}
+
+.workspace-header h2 {
+    font-family: 'Fira Code', monospace;
+    font-size: 1.5rem;
+}
+
+/* Empty states */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.005);
+    border: 2px dashed var(--border-color);
+    border-radius: 12px;
+    margin: 2rem 0;
+}
+
+.empty-state svg {
+    color: var(--text-dark);
+    margin-bottom: 1rem;
+}
+
+.empty-state h3 {
+    font-size: 1.125rem;
+    margin-bottom: 0.5rem;
+    font-family: 'Fira Code', monospace;
+}
+
+.empty-state p {
+    color: var(--text-muted);
+    font-size: 0.8125rem;
+    margin-bottom: 1.5rem;
+    max-width: 320px;
+}
+
+/* Scroll-reveal 3D animations */
+.scroll-reveal {
+    opacity: 0;
+    transform: translateY(30px) rotateX(12deg) scale(0.96);
+    transform-origin: top center;
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform, opacity;
+}
+
+.scroll-reveal.revealed {
+    opacity: 1;
+    transform: translateY(0) rotateX(0deg) scale(1);
+}
+
+/* Fullscreen Cyber Loading Overlay */
+.cyber-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(3, 6, 15, 0.95);
+    backdrop-filter: blur(10px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Fira Code', monospace;
+}
+
+.cyber-overlay-content {
+    background-color: var(--bg-card);
+    border: 1px solid var(--accent);
+    box-shadow: 0 0 30px rgba(0, 255, 102, 0.2);
+    border-radius: 12px;
+    padding: 3rem 2rem;
+    width: 90%;
+    max-width: 550px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.cyber-overlay-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    animation: scanner-glow 2s linear infinite;
+}
+
+@keyframes scanner-glow {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.cyber-loader-spinner {
+    width: 60px;
+    height: 60px;
+    border: 3px solid rgba(0, 255, 102, 0.1);
+    border-top: 3px solid var(--accent);
+    border-radius: 50%;
+    margin: 0 auto 1.5rem;
+    animation: spin-cyber 1s linear infinite;
+    box-shadow: 0 0 15px rgba(0, 255, 102, 0.2);
+}
+
+@keyframes spin-cyber {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.cyber-loading-title {
+    color: var(--accent);
+    font-size: 1.25rem;
+    font-weight: bold;
+    letter-spacing: 0.15em;
+    margin-bottom: 1.5rem;
+    text-shadow: var(--glow-green);
+    text-transform: uppercase;
+}
+
+.cyber-progress-container {
+    width: 100%;
+    height: 6px;
+    background-color: var(--border-color);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.cyber-progress-bar {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    box-shadow: 0 0 8px var(--accent);
+    transition: width 0.4s ease;
+}
+
+.cyber-terminal-logs {
+    background-color: #03060f;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 1rem;
+    text-align: left;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    height: 120px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.8);
+}
+
+.cyber-terminal-logs div {
+    line-height: 1.4;
+    word-break: break-all;
+}
+
+/* User management bot item */
+.manage-bot-item {
+    background: rgba(255, 255, 255, 0.01);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    transition: all 0.25s ease;
+}
+
+.manage-bot-item:hover {
+    border-color: var(--primary-light);
+    background: rgba(0, 212, 255, 0.03);
+}
+
+/* Tab button custom neon slider state (cyber look) */
+.tab {
+    position: relative;
+    overflow: hidden;
+}
+.tab::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: var(--accent);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+    box-shadow: 0 0 8px var(--accent);
+}
+.tab:hover::after, .tab.active::after {
+    width: 80%;
+}
+
+/* Environment Variable Row Layout */
+.env-row {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    align-items: center;
+    width: 100%;
+}
+.env-row .env-key {
+    flex: 1;
+}
+.env-row .env-value {
+    flex: 2;
+}
+.env-row button {
+    flex-shrink: 0;
+}
+
+/* Horizontal scroll for workspace tabs on mobile */
+.tab-container {
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+}
+.tab-container::-webkit-scrollbar {
+    height: 4px;
+}
+.tab-container::-webkit-scrollbar-thumb {
+    background-color: var(--border-color);
+    border-radius: 2px;
+}
+.tab {
+    flex-shrink: 0;
+    display: inline-block;
+}
+
+/* Spinner for Manual Log Refresh button */
+.spin {
+    animation: spin-cyber 1s linear infinite;
+}
+
+/* Mobile Responsiveness Improvements */
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: center;
+        text-align: center;
+    }
+    .user-menu {
+        flex-direction: column;
+        gap: 0.75rem;
+        align-items: center;
+        width: 100%;
+    }
+    .user-menu a {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+        border-left: 3px solid var(--accent);
+        padding-left: 0.75rem;
+    }
+    .section-header button {
+        width: 100%;
+    }
+    .env-row {
+        flex-direction: column;
+        align-items: stretch;
+        background: rgba(255, 255, 255, 0.01);
+        padding: 0.75rem;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+    }
+    .env-row .env-key, .env-row .env-value {
+        width: 100%;
+    }
+    .env-row button {
+        align-self: flex-end;
+    }
+}
+
+@media (max-width: 360px) {
+    .bots-grid {
+        grid-template-columns: 1fr;
+    }
+}
